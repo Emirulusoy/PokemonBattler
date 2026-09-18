@@ -1,4 +1,4 @@
-package PokeTest;
+package Pokedex;
 
 public class Main {
     public static void main(String[] args) {

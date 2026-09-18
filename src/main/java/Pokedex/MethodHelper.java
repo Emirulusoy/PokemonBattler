@@ -1,4 +1,4 @@
-package PokeTest;
+package Pokedex;
 
 public class MethodHelper {
     public static class InvalidPokemonException extends RuntimeException {
@@ -27,9 +27,10 @@ public class MethodHelper {
 
     public static String find(String findName, String[] pokemonList) {
         for (String p : pokemonList) {
-            if(p.equalsIgnoreCase(findName)){
+            if (p.equalsIgnoreCase(findName)) {
                 return p;
             }
-        }throw new PokemonNotFoundException("Pokemon hittades inte: " + findName);
+        }
+        throw new PokemonNotFoundException("Pokemon hittades inte: " + findName);
     }
 }
