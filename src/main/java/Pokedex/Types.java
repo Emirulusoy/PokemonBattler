@@ -6,4 +6,11 @@ public enum Types {
     ELECTRIC,
     NORMAL,
     GRASS,
+    GROUND,
+    ROCK,
+    STEEL,
+    ICE,
+    FIGHTING,
+    DARK,
+
 }

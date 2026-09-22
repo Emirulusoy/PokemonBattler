@@ -6,23 +6,26 @@ public class Attack {
     private int accuracy;
     private Types type;
 
-    public Attack(String name, int baseDamage, int accuracy, Types type){
+    public Attack(String name, int baseDamage, int accuracy, Types type) {
         this.name = name;
         this.baseDamage = baseDamage;
         this.accuracy = accuracy;
         this.type = type;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public int getBaseDamage(){
+
+    public int getBaseDamage() {
         return baseDamage;
     }
-    public int getAccuracy(){
+
+    public int getAccuracy() {
         return accuracy;
     }
-    public Types getType(){
+
+    public Types getType() {
         return type;
     }
-
 }
