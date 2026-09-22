@@ -1,6 +1,8 @@
 package Pokedex;
 
-public class MethodHelper {
+import java.util.Scanner;
+
+public class PokemonService {
     public static class InvalidPokemonException extends RuntimeException {
         public InvalidPokemonException(String message) {
             super(message);
@@ -32,5 +34,23 @@ public class MethodHelper {
             }
         }
         throw new PokemonNotFoundException("Pokemon hittades inte: " + findName);
+    }
+
+    public static int readIntInRange(Scanner scan, String prompt, int min, int max) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scan.nextLine();
+
+            try {
+                int value = Integer.parseInt(input.trim());
+                if (value < min || value > max) {
+                    System.out.println("Ange ett tal mellan " + min + " och " + max + ".");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Det där är inte ett giltigt tal. Försök igen.");
+            }
+        }
     }
 }
