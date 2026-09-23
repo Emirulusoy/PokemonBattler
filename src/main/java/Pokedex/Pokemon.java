@@ -37,4 +37,19 @@ public class Pokemon {
     public List<Attack> getAttacks() {
         return attacks;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(Types type) {
+        this.type = type;
+    }
+
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
+    }
+
+    public void setCurrentHp(int currentHp) {
+        this.currentHp = currentHp;
+    }
 }
