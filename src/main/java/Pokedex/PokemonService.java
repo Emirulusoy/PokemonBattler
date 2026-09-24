@@ -14,13 +14,13 @@ public class PokemonService {
 
     public static void validateHp(int hp) {
         if (hp <= 0) {
-            throw new InvalidPokemonException("HP måste vara > 0, fick: " + hp);
+            throw new InvalidPokemonException("HP has to be over 0, got: " + hp);
         }
     }
 
     public static void validateName(String name) {
         if (name.isBlank()) {
-            throw new InvalidPokemonException("Inget namn");
+            throw new InvalidPokemonException("No name");
         }
     }
 
@@ -36,7 +36,7 @@ public class PokemonService {
                 return p;
             }
         }
-        throw new PokemonNotFoundException("Pokemon hittades inte: " + findName);
+        throw new PokemonNotFoundException("Pokémon doesn't exist: " + findName);
     }
 
     public static int readIntInRange(Scanner scan, String prompt, int min, int max) {
@@ -47,47 +47,47 @@ public class PokemonService {
             try {
                 int value = Integer.parseInt(input.trim());
                 if (value < min || value > max) {
-                    System.out.println("Ange ett tal mellan " + min + " och " + max + ".");
+                    System.out.println("Say a number between " + min + " and " + max + ".");
                     continue;
                 }
                 return value;
             } catch (NumberFormatException e) {
-                System.out.println("Det där är inte ett giltigt tal. Försök igen.");
+                System.out.println("That isn't a valid number. Try again.");
             }
         }
     }
 
     //CASE 2 ADD POKÉMON
     public static void addPokemon(List<Pokemon> pokedex, Scanner scan) {
-        System.out.println("Lägg till: ");
-        System.out.println("Namn: ");
+        System.out.println("Add: ");
+        System.out.println("Name: ");
         String name = scan.nextLine();
         try {
             PokemonService.validateName(name);
         } catch (PokemonService.InvalidPokemonException e) {
-            System.out.println("Fel: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
             return;
         }
-        System.out.println("Typ: NORMAL, FIRE, WATER, GRASS, ELECTRIC, DARK, ICE, FIGHTING, GROUND, ROCK, STEEL ");
+        System.out.println("Type: NORMAL, FIRE, WATER, GRASS, ELECTRIC, DARK, ICE, FIGHTING, GROUND, ROCK, STEEL ");
         String typeInput = scan.nextLine();
         Types type;
         try {
             type = Types.valueOf(typeInput.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            System.out.println("Du måste skriva in en type.");
+            System.out.println("You have to add a valid type.");
             return;
         }
         int maxHp = PokemonService.readIntInRange(scan, "Max hp: ", 1, 999);
 
         Pokemon newPokemon = new Pokemon(name, type, maxHp, maxHp);
 
-        int numAttacks = PokemonService.readIntInRange(scan, "Antal attacker 1-4: ", 1, 4);
+        int numAttacks = PokemonService.readIntInRange(scan, "Amount of attacks 1-4: ", 1, 4);
         for (int i = 1; i <= numAttacks; i++) {
             System.out.println("Attack " + i + ":");
-            System.out.println("Namn: ");
+            System.out.println("Name: ");
             String attackName = scan.nextLine();
 
-            int baseDamage = PokemonService.readIntInRange(scan, "Damage", 0, 300);
+            int baseDamage = PokemonService.readIntInRange(scan, "Damage: ", 0, 300);
             int accuracy = PokemonService.readIntInRange(scan, "Accuracy 0-100: ", 0, 100);
 
             Types attackType = null;
@@ -97,7 +97,7 @@ public class PokemonService {
                 try {
                     attackType = Types.valueOf(attacktypeInput.trim().toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Ogiltig typ, försök igen.");
+                    System.out.println("Invalid type, try again.");
 
                 }
             }
@@ -106,104 +106,104 @@ public class PokemonService {
         }
 
         pokedex.add(newPokemon);
-        System.out.println("Lade till pokémon");
+        System.out.println("Added Pokémon");
     }
 
 
     //CASE 3 EDIT POKÉMON
     public static void editPokemon(List<Pokemon> pokedex, Scanner scan) {
         if (pokedex.isEmpty()) {
-            System.out.println("Inga Pokémon att redigera. ");
+            System.out.println("No Pokémon to edit. ");
             return;
         }
 
         for (int i = 0; i < pokedex.size(); i++) {
             System.out.println((i + 1) + ". " + pokedex.get(i).getName());
         }
-        int index = PokemonService.readIntInRange(scan, "Vilken Pokémon vill du redigera? ", 1, pokedex.size());
+        int index = PokemonService.readIntInRange(scan, "Which Pokémon do you want to edit? ", 1, pokedex.size());
         Pokemon pokemon = pokedex.get(index - 1);
 
         System.out.println("Editing: " + pokemon.getName());
-        System.out.println("Nytt namn (Enter för att behålla \"" + pokemon.getName() + "\"): ");
+        System.out.println("New name (press Enter to keep previous name \"" + pokemon.getName() + "\"): ");
         String newName = scan.nextLine();
         if (!newName.isBlank()) {
             pokemon.setName(newName);
         }
-        int newMaxHp = PokemonService.readIntInRange(scan, "Nytt max HP (nuvarande: " + pokemon.getMaxHp() + "): ", 1, 999);
+        int newMaxHp = PokemonService.readIntInRange(scan, "New max HP (n: " + pokemon.getMaxHp() + "): ", 1, 999);
         pokemon.setMaxHp(newMaxHp);
         pokemon.setCurrentHp(newMaxHp);
 
-        System.out.println("Ny typ (nuvarande: " + pokemon.getType() + "), Enter för att behålla: ");
+        System.out.println("Ny typ (nuvarande: " + pokemon.getType() + "), Press enter to keep: ");
         String newTypeInput = scan.nextLine();
         if (!newTypeInput.isBlank()) {
             try {
                 Types newType = Types.valueOf(newTypeInput.trim().toUpperCase());
                 pokemon.setType(newType);
             } catch (IllegalArgumentException e) {
-                System.out.println("Ogiltig typ, behåller " + pokemon.getType());
+                System.out.println("Invalid typ, keeping " + pokemon.getType());
             }
         }
 
-        System.out.println("Vill du ändra attacker? (ja/nej): ");
+        System.out.println("Do you wish to change attacks? (y/n): ");
         String editAttacks = scan.nextLine();
-        if (editAttacks.trim().equalsIgnoreCase("ja")) {
-            int attackChoice = PokemonService.readIntInRange(scan, "1. Lägg till attack  2. Ta bort attack  3. Ingen ändring: ", 1, 3);
+        if (editAttacks.trim().equalsIgnoreCase("y")) {
+            int attackChoice = PokemonService.readIntInRange(scan, "1. Add attack.  2. Remove attack.  3. No change. ", 1, 3);
 
             if (attackChoice == 1) {
                 if (pokemon.getAttacks().size() >= 4) {
-                    System.out.println("Redan 4 attacker. Vill du ersätta en? (ja/nej): ");
+                    System.out.println("Already 4 attacks. Do you wish to replace one? (y/n): ");
                     String replace = scan.nextLine();
-                    if (replace.trim().equalsIgnoreCase("ja")) {
+                    if (replace.trim().equalsIgnoreCase("y")) {
                         for (int i = 0; i < pokemon.getAttacks().size(); i++) {
                             System.out.println((i + 1) + ". " + pokemon.getAttacks().get(i).getName());
                         }
-                        int removeIndex = PokemonService.readIntInRange(scan, "Vilken attack vill du ta bort? ", 1, pokemon.getAttacks().size());
+                        int removeIndex = PokemonService.readIntInRange(scan, "Which attack will you remove? ", 1, pokemon.getAttacks().size());
                         pokemon.getAttacks().remove(removeIndex - 1);
                     } else {
-                        System.out.println("Avbryter.");
+                        System.out.println("Cancelling");
                     }
                 }
 
                 if (pokemon.getAttacks().size() < 4) {
-                    System.out.print("Namn: ");
+                    System.out.print("Name: ");
                     String attackName = scan.nextLine();
                     int baseDamage = PokemonService.readIntInRange(scan, "Damage: ", 0, 300);
                     int accuracy = PokemonService.readIntInRange(scan, "Accuracy 0-100: ", 0, 100);
 
                     Types attackType = null;
                     while (attackType == null) {
-                        System.out.print("Typ: ");
+                        System.out.print("Type: ");
                         String attackTypeInput = scan.nextLine();
                         try {
                             attackType = Types.valueOf(attackTypeInput.trim().toUpperCase());
                         } catch (IllegalArgumentException e) {
-                            System.out.println("Ogiltig typ, försök igen.");
+                            System.out.println("Invalid type, type again.");
                         }
                     }
                     pokemon.getAttacks().add(new Attack(attackName, baseDamage, accuracy, attackType));
-                    System.out.println("Attack tillagd.");
+                    System.out.println("Attack added.");
                 }
             } else if (attackChoice == 2) {
                 if (pokemon.getAttacks().isEmpty()) {
-                    System.out.println("Inga attacker att ta bort.");
+                    System.out.println("No attacker to remove.");
                 } else {
                     for (int i = 0; i < pokemon.getAttacks().size(); i++) {
                         System.out.println((i + 1) + ". " + pokemon.getAttacks().get(i).getName());
                     }
-                    int attackIndex = PokemonService.readIntInRange(scan, "Vilken attack vill du ta bort? ", 1, pokemon.getAttacks().size());
+                    int attackIndex = PokemonService.readIntInRange(scan, "Which attack will you remove? ", 1, pokemon.getAttacks().size());
                     pokemon.getAttacks().remove(attackIndex - 1);
-                    System.out.println("Attack borttagen.");
+                    System.out.println("Attack deleted.");
                 }
             }
         }
 
-        System.out.println("Uppdaterade " + pokemon.getName());
+        System.out.println("Updated " + pokemon.getName());
     }
 
     //CASE 4 DELETE POKÉMON
     public static void removePokemon(List<Pokemon> pokedex, Scanner scan) {
         if (pokedex.isEmpty()) {
-            System.out.println("Inga Pokémon att ta bort.");
+            System.out.println("No Pokémon to delete");
             return;
         }
 
@@ -211,10 +211,10 @@ public class PokemonService {
             System.out.println((i + 1) + ". " + pokedex.get(i).getName());
         }
 
-        int index = PokemonService.readIntInRange(scan, "Vilken Pokémon vill du ta bort? ", 1, pokedex.size());
+        int index = PokemonService.readIntInRange(scan, "Which Pokémon till you remove? ", 1, pokedex.size());
         Pokemon removed = pokedex.remove(index - 1);
 
-        System.out.println(removed.getName() + " togs bort.");
+        System.out.println(removed.getName() + " Deleted.");
     }
 
     //CASE 5 SAVE POKÉMON
@@ -237,9 +237,9 @@ public class PokemonService {
                 writer.write(line.toString());
                 writer.newLine();
             }
-            System.out.println("Pokédex sparad till " + filename);
+            System.out.println("Pokédex saved to: " + filename);
         } catch (IOException e) {
-            System.out.println("Kunde inte spara filen: " + e.getMessage());
+            System.out.println("Couldn't save file: " + e.getMessage());
         }
 
 
@@ -250,7 +250,7 @@ public class PokemonService {
         File file = new File(filename);
 
         if (!file.exists()) {
-            System.out.println("Ingen sparad fil hittades.");
+            System.out.println("No save file found.");
 
             return new ArrayList<>();
         }
@@ -282,9 +282,9 @@ public class PokemonService {
                 pokedex.add(p);
 
             }
-            System.out.println("Lade till pokémon");
+            System.out.println("Added pokémon");
         } catch (IOException e) {
-            System.out.println("Kunde inte läsa in Pokémonsen. " + e.getMessage());
+            System.out.println("Couldn't read the Pokémon. " + e.getMessage());
         }
         return pokedex;
     }

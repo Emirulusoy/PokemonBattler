@@ -12,16 +12,16 @@ public class Main {
 
         while (true) {
             System.out.println("\n===| Pokédex |===");
-            System.out.println("1. Visa alla Pokémons");
-            System.out.println("2. Lägg till ny Pokémon");
-            System.out.println("3. Redigera Pokémon");
-            System.out.println("4. Ta bort Pokémon");
-            System.out.println("5. Spara till fil");
-            System.out.println("6. Ladda från fil");
-            System.out.println("7. Återställ till seedad data");
-            System.out.println("8. Avsluta");
+            System.out.println("1. Show all Pokémon");
+            System.out.println("2. Add new Pokémon");
+            System.out.println("3. Edit Pokémon");
+            System.out.println("4. Delete Pokémon");
+            System.out.println("5. Save to file");
+            System.out.println("6. Upload from file");
+            System.out.println("7. Reset to seeded data");
+            System.out.println("8. Exit");
 
-            int choice = PokemonService.readIntInRange(scan, "Val: ", 1, 8);
+            int choice = PokemonService.readIntInRange(scan, "Choose: ", 1, 8);
 
             switch (choice) {
                 case 1 -> {
@@ -43,11 +43,11 @@ public class Main {
                 case 7 -> {
                     pokedex.clear();
                     pokedex.addAll(PokemonSeeder.seedData());
-                    System.out.println("Återställd till seedad data.");
+                    System.out.println("Reseted to seeded data.");
                 }
                 case 8 -> {
                     PokemonService.savePokedex(pokedex, "pokedex.txt");
-                    System.out.println("Sparar och avslutar...");
+                    System.out.println("| Saving and exiting |");
                     return;
                 }
             }
