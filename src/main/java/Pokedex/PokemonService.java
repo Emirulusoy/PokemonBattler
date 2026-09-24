@@ -1,10 +1,9 @@
 package Pokedex;
 
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.ArrayList;
 
 public class PokemonService {
     public static class InvalidPokemonException extends RuntimeException {
@@ -67,6 +66,7 @@ public class PokemonService {
             PokemonService.validateName(name);
         } catch (PokemonService.InvalidPokemonException e) {
             System.out.println("Fel: " + e.getMessage());
+            return;
         }
         System.out.println("Typ: NORMAL, FIRE, WATER, GRASS, ELECTRIC, DARK, ICE, FIGHTING, GROUND, ROCK, STEEL ");
         String typeInput = scan.nextLine();
@@ -98,6 +98,7 @@ public class PokemonService {
                     attackType = Types.valueOf(attacktypeInput.trim().toUpperCase());
                 } catch (IllegalArgumentException e) {
                     System.out.println("Ogiltig typ, försök igen.");
+
                 }
             }
 
@@ -240,6 +241,52 @@ public class PokemonService {
         } catch (IOException e) {
             System.out.println("Kunde inte spara filen: " + e.getMessage());
         }
+
+
+
+    }
+    //CASE 6
+    public static List<Pokemon> loadPokedex(String filename){
+        File file = new File(filename);
+
+        if (!file.exists()) {
+            System.out.println("Ingen sparad fil hittades.");
+
+            return new ArrayList<>();
+        }
+        List <Pokemon> pokedex = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] parts = line.split(";");
+                String name = parts[0];
+                Types type = Types.valueOf(parts[1]);
+                int maxHp = Integer.parseInt(parts[2]);
+                int currentHp = Integer.parseInt(parts[3]);
+                Pokemon p = new Pokemon(name, type, maxHp, currentHp);
+                if (parts.length > 4 && !parts[4].isBlank()) {
+                    String[] attackParts = parts[4].split("\\|");
+
+                    for (String attackStr : attackParts) {
+                        String[] a = attackStr.split(",");
+                        String attackName = a[0];
+                        int baseDamage = Integer.parseInt(a[1]);
+                        int accuracy = Integer.parseInt(a[2]);
+                        Types attackType = Types.valueOf(a[3]);
+
+                        p.getAttacks().add(new Attack(attackName, baseDamage, accuracy, attackType));
+                    }
+                }
+
+                pokedex.add(p);
+
+            }
+            System.out.println("Lade till pokémon");
+        } catch (IOException e) {
+            System.out.println("Kunde inte läsa in Pokémonsen. " + e.getMessage());
+        }
+        return pokedex;
     }
 }
 

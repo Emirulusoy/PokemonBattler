@@ -33,9 +33,20 @@ public class Main {
                 case 3 -> PokemonService.editPokemon(pokedex, scan);
                 case 4 -> PokemonService.removePokemon(pokedex, scan);
                 case 5 -> PokemonService.savePokedex(pokedex, "pokedex.txt");
-                case 6 -> System.out.println("Ladda: ");
-                case 7 -> System.out.println("Återställ: ");
+                case 6 -> {
+                    List<Pokemon> loaded = PokemonService.loadPokedex("pokedex.txt");
+                    if (!loaded.isEmpty()) {
+                        pokedex.clear();
+                        pokedex.addAll(loaded);
+                    }
+                }
+                case 7 -> {
+                    pokedex.clear();
+                    pokedex.addAll(PokemonSeeder.seedData());
+                    System.out.println("Återställd till seedad data.");
+                }
                 case 8 -> {
+                    PokemonService.savePokedex(pokedex, "pokedex.txt");
                     System.out.println("Sparar och avslutar...");
                     return;
                 }
