@@ -1,8 +1,26 @@
 Hey! 
 Im glad that you're here and trying out my pokédex, i hope you'll have fun messing around!
 
-1. Visa alla Pokémons
-Visar alla pokémon som existerar i programmet.
+1. Show all Pokémon
+Shows all Pokémon that exist in the program.
 
-2. Lägg till ny Pokémon
-Lägger till pokémon in i filen, kan välja namn, typ, hp 
+2. Add new Pokémon
+Adds new Pokémon to the program. You can choose the Name, Its typing, its hp and its moves.
+
+3. Edit Pokémon
+Edits Pokémon. can change their names, typing moves aswell as their hp.
+
+4. Delete Pokémon
+Deletes a Pokémon of your choosing.
+
+5. Save to file
+This saves the Pokémon you've added/deleted/edited to the pokédex.
+
+6. Upload from file
+This uploads the pokédex that exists in the file.
+
+7. Reset to seeded data
+This resets that data so that the default Pokémon show when you show all Pokémon
+
+8. Exit
+Exit the program.
