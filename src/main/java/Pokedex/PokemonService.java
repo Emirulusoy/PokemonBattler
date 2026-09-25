@@ -12,6 +12,12 @@ public class PokemonService {
         }
     }
 
+    public static class PokemonNotFoundException extends RuntimeException {
+        public PokemonNotFoundException(String message) {
+            super(message);
+        }
+    }
+
     public static void validateHp(int hp) {
         if (hp <= 0) {
             throw new InvalidPokemonException("HP has to be over 0, got: " + hp);
@@ -22,21 +28,14 @@ public class PokemonService {
         if (name.isBlank()) {
             throw new InvalidPokemonException("No name");
         }
-    }
-
-    public static class PokemonNotFoundException extends RuntimeException {
-        public PokemonNotFoundException(String message) {
-            super(message);
-        }
-    }
-
-    public static String find(String findName, String[] pokemonList) {
-        for (String p : pokemonList) {
-            if (p.equalsIgnoreCase(findName)) {
-                return p;
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            boolean isLetter = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+            boolean isSpace = c == ' ';
+            if (!isLetter && !isSpace) {
+                throw new InvalidPokemonException("Name can only contain letters");
             }
         }
-        throw new PokemonNotFoundException("Pokémon doesn't exist: " + findName);
     }
 
     public static int readIntInRange(Scanner scan, String prompt, int min, int max) {
@@ -57,9 +56,36 @@ public class PokemonService {
         }
     }
 
+    private static String readValidAttackName(Scanner scan) {
+        while (true) {
+            System.out.println("Name: ");
+            String attackName = scan.nextLine();
+            try {
+                validateName(attackName);
+                return attackName;
+            } catch (InvalidPokemonException e) {
+                System.out.println("Invalid attack name: " + e.getMessage() + ". Try again.");
+            }
+        }
+    }
+
+    private static boolean readYesNo(Scanner scan, String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            String answer = scan.nextLine().trim();
+            if (answer.equalsIgnoreCase("y")) {
+                return true;
+            }
+            if (answer.equalsIgnoreCase("n")) {
+                return false;
+            }
+            System.out.println("Please answer y or n.");
+        }
+    }
+
     //CASE 2 ADD POKÉMON
     public static void addPokemon(List<Pokemon> pokedex, Scanner scan) {
-        System.out.println("Add: ");
+        System.out.println("| Adding Pokémon |");
         System.out.println("Name: ");
         String name = scan.nextLine();
         try {
@@ -69,23 +95,24 @@ public class PokemonService {
             return;
         }
         System.out.println("Type: NORMAL, FIRE, WATER, GRASS, ELECTRIC, DARK, ICE, FIGHTING, GROUND, ROCK, STEEL ");
-        String typeInput = scan.nextLine();
-        Types type;
-        try {
-            type = Types.valueOf(typeInput.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            System.out.println("You have to add a valid type.");
-            return;
+        Types type = null;
+        while (type == null) {
+            String typeInput = scan.nextLine();
+            try {
+                type = Types.valueOf(typeInput.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid type, try again.");
+            }
         }
         int maxHp = PokemonService.readIntInRange(scan, "Max hp: ", 1, 999);
+        PokemonService.validateHp(maxHp);
 
         Pokemon newPokemon = new Pokemon(name, type, maxHp, maxHp);
 
         int numAttacks = PokemonService.readIntInRange(scan, "Amount of attacks 1-4: ", 1, 4);
         for (int i = 1; i <= numAttacks; i++) {
             System.out.println("Attack " + i + ":");
-            System.out.println("Name: ");
-            String attackName = scan.nextLine();
+            String attackName = readValidAttackName(scan);
 
             int baseDamage = PokemonService.readIntInRange(scan, "Damage: ", 0, 300);
             int accuracy = PokemonService.readIntInRange(scan, "Accuracy 0-100: ", 0, 100);
@@ -98,7 +125,6 @@ public class PokemonService {
                     attackType = Types.valueOf(attacktypeInput.trim().toUpperCase());
                 } catch (IllegalArgumentException e) {
                     System.out.println("Invalid type, try again.");
-
                 }
             }
 
@@ -106,7 +132,7 @@ public class PokemonService {
         }
 
         pokedex.add(newPokemon);
-        System.out.println("Added Pokémon");
+        System.out.println("Added Pokémon\n Dont forget to save to file!");
     }
 
 
@@ -127,33 +153,37 @@ public class PokemonService {
         System.out.println("New name (press Enter to keep previous name \"" + pokemon.getName() + "\"): ");
         String newName = scan.nextLine();
         if (!newName.isBlank()) {
-            pokemon.setName(newName);
+            try {
+                PokemonService.validateName(newName);
+                pokemon.setName(newName);
+            } catch (PokemonService.InvalidPokemonException e) {
+                System.out.println("Invalid name (" + e.getMessage() + "), keeping \"" + pokemon.getName() + "\"");
+            }
         }
-        int newMaxHp = PokemonService.readIntInRange(scan, "New max HP (n: " + pokemon.getMaxHp() + "): ", 1, 999);
+        int newMaxHp = PokemonService.readIntInRange(scan, "New max HP (current HP: " + pokemon.getMaxHp() + "): ", 1, 999);
+        PokemonService.validateHp(newMaxHp);
         pokemon.setMaxHp(newMaxHp);
         pokemon.setCurrentHp(newMaxHp);
 
-        System.out.println("Ny typ (nuvarande: " + pokemon.getType() + "), Press enter to keep: ");
+        System.out.println("New type (current type: " + pokemon.getType() + "), Press enter to keep: ");
         String newTypeInput = scan.nextLine();
         if (!newTypeInput.isBlank()) {
             try {
                 Types newType = Types.valueOf(newTypeInput.trim().toUpperCase());
                 pokemon.setType(newType);
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid typ, keeping " + pokemon.getType());
+                System.out.println("Invalid type, keeping " + pokemon.getType());
             }
         }
 
-        System.out.println("Do you wish to change attacks? (y/n): ");
-        String editAttacks = scan.nextLine();
-        if (editAttacks.trim().equalsIgnoreCase("y")) {
+        boolean wantsToEditAttacks = readYesNo(scan, "Do you wish to change attacks? (y/n): ");
+        if (wantsToEditAttacks) {
             int attackChoice = PokemonService.readIntInRange(scan, "1. Add attack.  2. Remove attack.  3. No change. ", 1, 3);
 
             if (attackChoice == 1) {
                 if (pokemon.getAttacks().size() >= 4) {
-                    System.out.println("Already 4 attacks. Do you wish to replace one? (y/n): ");
-                    String replace = scan.nextLine();
-                    if (replace.trim().equalsIgnoreCase("y")) {
+                    boolean wantsToReplace = readYesNo(scan, "Already 4 attacks. Do you wish to replace one? (y/n): ");
+                    if (wantsToReplace) {
                         for (int i = 0; i < pokemon.getAttacks().size(); i++) {
                             System.out.println((i + 1) + ". " + pokemon.getAttacks().get(i).getName());
                         }
@@ -165,8 +195,7 @@ public class PokemonService {
                 }
 
                 if (pokemon.getAttacks().size() < 4) {
-                    System.out.print("Name: ");
-                    String attackName = scan.nextLine();
+                    String attackName = readValidAttackName(scan);
                     int baseDamage = PokemonService.readIntInRange(scan, "Damage: ", 0, 300);
                     int accuracy = PokemonService.readIntInRange(scan, "Accuracy 0-100: ", 0, 100);
 
@@ -186,6 +215,9 @@ public class PokemonService {
             } else if (attackChoice == 2) {
                 if (pokemon.getAttacks().isEmpty()) {
                     System.out.println("No attacker to remove.");
+                } else if (pokemon.getAttacks().size() == 1) {
+                    // Domain rule: a Pokémon must always have 1-4 attacks.
+                    System.out.println("Can't remove the last attack - a Pokémon needs at least 1.");
                 } else {
                     for (int i = 0; i < pokemon.getAttacks().size(); i++) {
                         System.out.println((i + 1) + ". " + pokemon.getAttacks().get(i).getName());
@@ -241,48 +273,52 @@ public class PokemonService {
         } catch (IOException e) {
             System.out.println("Couldn't save file: " + e.getMessage());
         }
-
-
-
     }
+
     //CASE 6
-    public static List<Pokemon> loadPokedex(String filename){
+    public static List<Pokemon> loadPokedex(String filename) {
         File file = new File(filename);
 
         if (!file.exists()) {
             System.out.println("No save file found.");
-
             return new ArrayList<>();
         }
-        List <Pokemon> pokedex = new ArrayList<>();
+        List<Pokemon> pokedex = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            while((line = reader.readLine()) != null){
-                String[] parts = line.split(";");
-                String name = parts[0];
-                Types type = Types.valueOf(parts[1]);
-                int maxHp = Integer.parseInt(parts[2]);
-                int currentHp = Integer.parseInt(parts[3]);
-                Pokemon p = new Pokemon(name, type, maxHp, currentHp);
-                if (parts.length > 4 && !parts[4].isBlank()) {
-                    String[] attackParts = parts[4].split("\\|");
-
-                    for (String attackStr : attackParts) {
-                        String[] a = attackStr.split(",");
-                        String attackName = a[0];
-                        int baseDamage = Integer.parseInt(a[1]);
-                        int accuracy = Integer.parseInt(a[2]);
-                        Types attackType = Types.valueOf(a[3]);
-
-                        p.getAttacks().add(new Attack(attackName, baseDamage, accuracy, attackType));
-                    }
+            int lineNumber = 0;
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                if (line.isBlank()) {
+                    continue;
                 }
+                try {
+                    String[] parts = line.split(";", -1);
+                    String name = parts[0];
+                    Types type = Types.valueOf(parts[1]);
+                    int maxHp = Integer.parseInt(parts[2]);
+                    int currentHp = Integer.parseInt(parts[3]);
+                    Pokemon p = new Pokemon(name, type, maxHp, currentHp);
 
-                pokedex.add(p);
+                    if (parts.length > 4 && !parts[4].isBlank()) {
+                        String[] attackParts = parts[4].split("\\|");
+                        for (String attackStr : attackParts) {
+                            String[] a = attackStr.split(",");
+                            String attackName = a[0];
+                            int baseDamage = Integer.parseInt(a[1]);
+                            int accuracy = Integer.parseInt(a[2]);
+                            Types attackType = Types.valueOf(a[3]);
+                            p.getAttacks().add(new Attack(attackName, baseDamage, accuracy, attackType));
+                        }
+                    }
 
+                    pokedex.add(p);
+                } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Skipping corrupted line " + lineNumber + " in save file: " + e.getMessage());
+                }
             }
-            System.out.println("Added pokémon");
+            System.out.println("Loaded " + pokedex.size() + " Pokémon.");
         } catch (IOException e) {
             System.out.println("Couldn't read the Pokémon. " + e.getMessage());
         }
