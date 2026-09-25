@@ -12,12 +12,6 @@ public class PokemonService {
         }
     }
 
-    public static class PokemonNotFoundException extends RuntimeException {
-        public PokemonNotFoundException(String message) {
-            super(message);
-        }
-    }
-
     public static void validateHp(int hp) {
         if (hp <= 0) {
             throw new InvalidPokemonException("HP has to be over 0, got: " + hp);
@@ -85,7 +79,7 @@ public class PokemonService {
 
     //CASE 2 ADD POKÉMON
     public static void addPokemon(List<Pokemon> pokedex, Scanner scan) {
-        System.out.println("| Adding Pokémon |");
+        System.out.println("| Adding Pokemon |");
         System.out.println("Name: ");
         String name = scan.nextLine();
         try {
@@ -132,21 +126,21 @@ public class PokemonService {
         }
 
         pokedex.add(newPokemon);
-        System.out.println("Added Pokémon\n Dont forget to save to file!");
+        System.out.println("Added Pokemon\n Dont forget to save to file!");
     }
 
 
     //CASE 3 EDIT POKÉMON
     public static void editPokemon(List<Pokemon> pokedex, Scanner scan) {
         if (pokedex.isEmpty()) {
-            System.out.println("No Pokémon to edit. ");
+            System.out.println("No Pokemon to edit. ");
             return;
         }
 
         for (int i = 0; i < pokedex.size(); i++) {
             System.out.println((i + 1) + ". " + pokedex.get(i).getName());
         }
-        int index = PokemonService.readIntInRange(scan, "Which Pokémon do you want to edit? ", 1, pokedex.size());
+        int index = PokemonService.readIntInRange(scan, "Which Pokemon do you want to edit? ", 1, pokedex.size());
         Pokemon pokemon = pokedex.get(index - 1);
 
         System.out.println("Editing: " + pokemon.getName());
@@ -216,8 +210,7 @@ public class PokemonService {
                 if (pokemon.getAttacks().isEmpty()) {
                     System.out.println("No attacker to remove.");
                 } else if (pokemon.getAttacks().size() == 1) {
-                    // Domain rule: a Pokémon must always have 1-4 attacks.
-                    System.out.println("Can't remove the last attack - a Pokémon needs at least 1.");
+                    System.out.println("Can't remove the last attack - a Pokemon needs at least 1.");
                 } else {
                     for (int i = 0; i < pokemon.getAttacks().size(); i++) {
                         System.out.println((i + 1) + ". " + pokemon.getAttacks().get(i).getName());
@@ -235,7 +228,7 @@ public class PokemonService {
     //CASE 4 DELETE POKÉMON
     public static void removePokemon(List<Pokemon> pokedex, Scanner scan) {
         if (pokedex.isEmpty()) {
-            System.out.println("No Pokémon to delete");
+            System.out.println("No Pokemon to delete");
             return;
         }
 
@@ -243,7 +236,7 @@ public class PokemonService {
             System.out.println((i + 1) + ". " + pokedex.get(i).getName());
         }
 
-        int index = PokemonService.readIntInRange(scan, "Which Pokémon till you remove? ", 1, pokedex.size());
+        int index = PokemonService.readIntInRange(scan, "Which Pokemon till you remove? ", 1, pokedex.size());
         Pokemon removed = pokedex.remove(index - 1);
 
         System.out.println(removed.getName() + " Deleted.");
@@ -269,7 +262,7 @@ public class PokemonService {
                 writer.write(line.toString());
                 writer.newLine();
             }
-            System.out.println("Pokédex saved to: " + filename);
+            System.out.println("Pokedex saved to: " + filename);
         } catch (IOException e) {
             System.out.println("Couldn't save file: " + e.getMessage());
         }
@@ -318,9 +311,9 @@ public class PokemonService {
                     System.out.println("Skipping corrupted line " + lineNumber + " in save file: " + e.getMessage());
                 }
             }
-            System.out.println("Loaded " + pokedex.size() + " Pokémon.");
+            System.out.println("Loaded " + pokedex.size() + " Pokemon.");
         } catch (IOException e) {
-            System.out.println("Couldn't read the Pokémon. " + e.getMessage());
+            System.out.println("Couldn't read the Pokemon. " + e.getMessage());
         }
         return pokedex;
     }

@@ -16,11 +16,11 @@ public class Main {
         Scanner scan = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\n===| Pokédex |===");
-            System.out.println("1. Show all Pokémon");
-            System.out.println("2. Add new Pokémon");
-            System.out.println("3. Edit Pokémon");
-            System.out.println("4. Delete Pokémon");
+            System.out.println("\n===| Pokedex |===");
+            System.out.println("1. Show all Pokemon");
+            System.out.println("2. Add new Pokemon");
+            System.out.println("3. Edit Pokemon");
+            System.out.println("4. Delete Pokemon");
             System.out.println("5. Save to file");
             System.out.println("6. Upload from file");
             System.out.println("7. Reset to seeded data");
@@ -31,8 +31,12 @@ public class Main {
             switch (choice) {
                 //CASE 1 SHOW ALL POKÉMON
                 case 1 -> {
-                    for (Pokemon p : pokedex) {
-                        System.out.println(p.getName() + " | " + p.getType() + " | HP: " + p.getCurrentHp() + "/" + p.getMaxHp());
+                    if (pokedex.isEmpty()) {
+                        System.out.println("No Pokemon to show.");
+                    } else {
+                        for (Pokemon p : pokedex) {
+                            System.out.println(p.getName() + " | " + p.getType() + " | HP: " + p.getCurrentHp() + "/" + p.getMaxHp());
+                        }
                     }
                 }
                 //CASE 2 ADD POKÉMON
