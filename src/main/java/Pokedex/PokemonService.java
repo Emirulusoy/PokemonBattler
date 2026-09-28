@@ -5,29 +5,25 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+
 public class PokemonService {
-    public static class InvalidPokemonException extends RuntimeException {
-        public InvalidPokemonException(String message) {
-            super(message);
-        }
-    }
 
     public static void validateHp(int hp) {
         if (hp <= 0) {
-            throw new InvalidPokemonException("HP has to be over 0, got: " + hp);
+            throw new PokemonException("HP has to be over 0, got: " + hp);
         }
     }
 
     public static void validateName(String name) {
         if (name.isBlank()) {
-            throw new InvalidPokemonException("No name");
+            throw new PokemonException("No name");
         }
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
             boolean isLetter = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
             boolean isSpace = c == ' ';
             if (!isLetter && !isSpace) {
-                throw new InvalidPokemonException("Name can only contain letters");
+                throw new PokemonException("Name can only contain letters");
             }
         }
     }
@@ -57,7 +53,7 @@ public class PokemonService {
             try {
                 validateName(attackName);
                 return attackName;
-            } catch (InvalidPokemonException e) {
+            } catch (PokemonException e) {
                 System.out.println("Invalid attack name: " + e.getMessage() + ". Try again.");
             }
         }
@@ -84,7 +80,7 @@ public class PokemonService {
         String name = scan.nextLine();
         try {
             PokemonService.validateName(name);
-        } catch (PokemonService.InvalidPokemonException e) {
+        } catch (PokemonException e) {
             System.out.println("Error: " + e.getMessage());
             return;
         }
@@ -150,7 +146,7 @@ public class PokemonService {
             try {
                 PokemonService.validateName(newName);
                 pokemon.setName(newName);
-            } catch (PokemonService.InvalidPokemonException e) {
+            } catch (PokemonException e) {
                 System.out.println("Invalid name (" + e.getMessage() + "), keeping \"" + pokemon.getName() + "\"");
             }
         }
