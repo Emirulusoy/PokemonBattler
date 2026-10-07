@@ -117,7 +117,7 @@ public class PokemonService {
                 }
             }
 
-            newPokemon.getAttacks().add(new Attack(attackName, baseDamage, accuracy, attackType));
+            newPokemon.getAttacks().add(new PokemonDamage(attackName, baseDamage, accuracy, attackType));
         }
 
         pokedex.add(newPokemon);
@@ -203,7 +203,7 @@ public class PokemonService {
                             System.out.println("Invalid type, type again.");
                         }
                     }
-                    updated.addAttack(new Attack(attackName, baseDamage, accuracy, attackType));
+                    updated.addAttack(new PokemonDamage(attackName, baseDamage, accuracy, attackType));
                     System.out.println("Attack added.");
                 }
             } else if (attackChoice == 2) {
@@ -254,10 +254,12 @@ public class PokemonService {
                         .append(p.getCurrentHp()).append(";");
 
                 for (Attack a : p.getAttacks()) {
-                    line.append(a.getName()).append(",")
-                            .append(a.getBaseDamage()).append(",")
-                            .append(a.getAccuracy()).append(",")
-                            .append(a.getType()).append("|");
+                    if (a instanceof PokemonDamage da) {
+                        line.append(da.getName()).append(",")
+                                .append(da.getPower()).append(",")
+                                .append(da.getAccuracy()).append(",")
+                                .append(da.getType()).append("|");
+                    }
                 }
 
                 writer.write(line.toString());
@@ -303,7 +305,7 @@ public class PokemonService {
                             int baseDamage = Integer.parseInt(a[1]);
                             int accuracy = Integer.parseInt(a[2]);
                             Types attackType = Types.valueOf(a[3]);
-                            p.getAttacks().add(new Attack(attackName, baseDamage, accuracy, attackType));
+                            p.getAttacks().add(new PokemonDamage(attackName, baseDamage, accuracy, attackType));
                         }
                     }
 
