@@ -1,6 +1,6 @@
 package Pokedex;
 
-public abstract class Attack {
+public abstract class Attack implements BattleAction {
     private String name;
     private int accuracy;
     private Types type;
