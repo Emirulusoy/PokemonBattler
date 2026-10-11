@@ -18,7 +18,7 @@ public class StrategyDemo {
         List<BattleAction> options = new ArrayList<>(self.getAttacks());
         for (int i = 0; i < 6; i++) {
             BattleAction action = cpu.takeTurn(self, enemy, options);
-            System.out.println(self.getName() + " väljer " + action.getName());
+            System.out.println(self.getName() + " Choosing " + action.getName());
         }
     }
 }

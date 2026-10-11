@@ -13,7 +13,7 @@ class RandomStrategy implements CpuStrategy {
     @Override
     public BattleAction chooseAction(Pokemon self, Pokemon enemy, List<BattleAction> options) {
         if (options.isEmpty()) {
-            throw new PokemonException("Inga val att välja bland");
+            throw new PokemonException("No options to choose");
         }
         return options.get(random.nextInt(options.size()));
     }
@@ -24,7 +24,7 @@ class AggressiveStrategy implements CpuStrategy {
     @Override
     public BattleAction chooseAction(Pokemon self, Pokemon enemy, List<BattleAction> options) {
         if (options.isEmpty()) {
-            throw new PokemonException("Inga val att välja bland");
+            throw new PokemonException("No options to choose");
         }
 
         PokemonDamage best = null;

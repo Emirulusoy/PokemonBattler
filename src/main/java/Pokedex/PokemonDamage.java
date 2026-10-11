@@ -1,6 +1,11 @@
 package Pokedex;
 
+import java.util.Random;
+
 public class PokemonDamage extends Attack {
+    private static final Random RANDOM = new Random();
+    private static final double DAMAGE_SCALE = 0.4;
+
     private final int power;
 
     public PokemonDamage(String name, int power, int accuracy, Types type) {
@@ -17,7 +22,9 @@ public class PokemonDamage extends Attack {
 
     @Override
     public void execute(Pokemon attacker, Pokemon defender) {
-        defender.takeDamage(power);
+        double randomFactor = 0.85 + RANDOM.nextDouble() * 0.15;
+        int damage = (int) Math.round(power * DAMAGE_SCALE * randomFactor);
+        defender.takeDamage(Math.max(1, damage));
     }
 
     @Override

@@ -1,6 +1,10 @@
 package Pokedex;
 
+import java.util.Random;
+
 public abstract class Attack implements BattleAction {
+    private static final Random RANDOM = new Random();
+
     private String name;
     private int accuracy;
     private Types type;
@@ -12,6 +16,11 @@ public abstract class Attack implements BattleAction {
     }
 
     public abstract void execute(Pokemon attacker, Pokemon defender);
+
+    @Override
+    public boolean rollHit() {
+        return RANDOM.nextInt(100) < accuracy;
+    }
 
     public String getName() {
         return name;

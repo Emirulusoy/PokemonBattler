@@ -14,6 +14,7 @@ public class Main {
             pokedex = PokemonSeeder.seedData();
         }
         Scanner scan = new Scanner(System.in);
+        BattleEngine battleEngine = new BattleEngine(scan, new CpuPlayer(new RandomStrategy()));
 
         while (true) {
             System.out.println("\n===| Pokedex |===");
@@ -24,9 +25,10 @@ public class Main {
             System.out.println("5. Save to file");
             System.out.println("6. Upload from file");
             System.out.println("7. Reset to seeded data");
-            System.out.println("8. Exit and save");
+            System.out.println("8. Start battle");
+            System.out.println("9. Exit and save");
 
-            int choice = PokemonService.readIntInRange(scan, "Choose: ", 1, 8);
+            int choice = PokemonService.readIntInRange(scan, "Choose: ", 1, 9);
 
             switch (choice) {
                 //CASE 1 SHOW ALL POKÉMON
@@ -62,8 +64,10 @@ public class Main {
                     PokemonService.savePokedex(pokedex, "pokedex.txt");
                     System.out.println("Reseted to seeded data.");
                 }
-                //CASE 8 EXIT AND SAVE
-                case 8 -> {
+                //CASE 8 START BATTLE
+                case 8 -> battleEngine.startBattle(pokedex);
+                //CASE 9 EXIT AND SAVE
+                case 9 -> {
                     PokemonService.savePokedex(pokedex, "pokedex.txt");
                     System.out.println("| Saving and exiting |");
                     return;
