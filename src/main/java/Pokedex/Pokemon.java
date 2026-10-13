@@ -8,27 +8,39 @@ public class Pokemon {
     private final Types type;
     private final int maxHp;
     private int currentHp;
+    private final int speed;
     private final List<Attack> attacks;
 
-    public Pokemon(String name, Types type, int maxHp, int currentHp) {
+    public static final int DEFAULT_SPEED = 50;
+    public static final int MAX_SPEED = 999;
+
+    public Pokemon(String name, Types type, int maxHp, int currentHp, int speed) {
+        if (speed < 1 || speed > MAX_SPEED) {
+            throw new PokemonException("Speed must be between 1 and " + MAX_SPEED + ", got: " + speed);
+        }
         if (name == null || name.isBlank()) {
-            throw new PokemonException("Namn får inte vara tomt");
+            throw new PokemonException("Name can't be empty");
         }
         if (type == null) {
-            throw new PokemonException("Typ måste anges");
+            throw new PokemonException("Type must be given");
         }
         if (maxHp <= 0) {
-            throw new PokemonException("Max-HP måste vara > 0");
+            throw new PokemonException("Max HP must be over 0");
         }
         if (currentHp < 0) {
-            throw new PokemonException("Nuvarande HP kan inte vara negativt");
+            throw new PokemonException("Current HP can't be negative");
         }
 
         this.name = name.trim();
         this.type = type;
         this.maxHp = maxHp;
         this.currentHp = Math.min(currentHp, maxHp);
+        this.speed = speed;
         this.attacks = new ArrayList<>();
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 
     public String getName() {
@@ -53,24 +65,24 @@ public class Pokemon {
 
     public void addAttack(Attack attack) {
         if (attack == null) {
-            throw new PokemonException("Attack kan inte vara null");
+            throw new PokemonException("Attack can't be null");
         }
         if (attacks.size() >= 4) {
-            throw new PokemonException("En Pokemon kan max ha 4 attacker");
+            throw new PokemonException("A Pokemon can have 4 attacks at most");
         }
         attacks.add(attack);
     }
 
     public void takeDamage(int amount) {
         if (amount < 0) {
-            throw new PokemonException("Skada kan inte vara negativ");
+            throw new PokemonException("Damage can't be negative");
         }
         currentHp = Math.max(0, currentHp - amount);
     }
 
     public void heal(int amount) {
         if (amount < 0) {
-            throw new PokemonException("Healing kan inte vara negativ");
+            throw new PokemonException("Healing can't be negative");
         }
         currentHp = Math.min(maxHp, currentHp + amount);
     }
@@ -83,7 +95,8 @@ public class Pokemon {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(name).append(" (").append(type.getLabel()).append(") | HP: ")
-                .append(currentHp).append("/").append(maxHp).append(" | Attacks: ");
+                .append(currentHp).append("/").append(maxHp)
+                .append(" | Speed: ").append(speed).append(" | Attacks: ");
 
         for (int i = 0; i < attacks.size(); i++) {
             sb.append(attacks.get(i).getName());

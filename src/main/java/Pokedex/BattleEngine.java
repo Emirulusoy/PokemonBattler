@@ -43,8 +43,13 @@ public class BattleEngine {
         System.out.println("\nA wild " + wild.getName() + " appeared!");
         System.out.println("Go, " + player.getName() + "!");
 
-        boolean playerWon = runBattle(player, wild);
-        player.heal(player.getMaxHp());
+        boolean playerWon;
+        try {
+            playerWon = runBattle(player, wild);
+        } finally {
+            // Always restore HP, even if the input ends in the middle of the battle
+            player.heal(player.getMaxHp());
+        }
 
         if (playerWon) {
             System.out.println("\nYou won! " + player.getName() + " defeated the wild " + wild.getName() + ".");
@@ -59,21 +64,56 @@ public class BattleEngine {
         return wildPool.get(random.nextInt(wildPool.size()));
     }
 
+
     private boolean runBattle(Pokemon player, Pokemon wild) {
+        int round = 1;
         while (true) {
+            System.out.println("\n--- Round " + round + " ---");
             BattleAction playerAction = choosePlayerAction(player);
-            performTurn(player, wild, playerAction);
-            if (wild.isFainted()) {
-                return true;
-            }
 
             List<BattleAction> options = new ArrayList<>(wild.getAttacks());
             BattleAction cpuAction = cpu.takeTurn(wild, player, options);
-            performTurn(wild, player, cpuAction);
-            if (player.isFainted()) {
-                return false;
+
+            boolean playerFirst = playerGoesFirst(player, wild);
+            printTurnOrder(player, wild, playerFirst);
+            if (playerFirst) {
+                performTurn(player, wild, playerAction);
+                if (wild.isFainted()) {
+                    return true;
+                }
+                performTurn(wild, player, cpuAction);
+                if (player.isFainted()) {
+                    return false;
+                }
+            } else {
+                performTurn(wild, player, cpuAction);
+                if (player.isFainted()) {
+                    return false;
+                }
+                performTurn(player, wild, playerAction);
+                if (wild.isFainted()) {
+                    return true;
+                }
             }
+            round++;
         }
+    }
+
+    private void printTurnOrder(Pokemon player, Pokemon wild, boolean playerFirst) {
+        Pokemon first = playerFirst ? player : wild;
+        Pokemon second = playerFirst ? wild : player;
+        if (player.getSpeed() == wild.getSpeed()) {
+            System.out.println("Same speed (" + player.getSpeed() + ") - " + first.getName() + " wins the coin flip and attacks first.");
+        } else {
+            System.out.println(first.getName() + " is faster (" + first.getSpeed() + " vs " + second.getSpeed() + ") and attacks first.");
+        }
+    }
+
+    private boolean playerGoesFirst(Pokemon player, Pokemon wild) {
+        if (player.getSpeed() != wild.getSpeed()) {
+            return player.getSpeed() > wild.getSpeed();
+        }
+        return random.nextBoolean();
     }
 
     private BattleAction choosePlayerAction(Pokemon player) {
