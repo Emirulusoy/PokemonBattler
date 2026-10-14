@@ -8,4 +8,8 @@ public interface BattleAction {
     default boolean rollHit() {
         return true;
     }
+
+    default double getEffectiveness(Pokemon target) {
+        return 1.0;
+    }
 }
