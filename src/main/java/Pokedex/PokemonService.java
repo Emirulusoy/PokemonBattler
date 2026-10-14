@@ -96,7 +96,9 @@ public class PokemonService {
         int maxHp = PokemonService.readIntInRange(scan, "Max hp: ", 1, 999);
         PokemonService.validateHp(maxHp);
 
-        Pokemon newPokemon = new Pokemon(name, type, maxHp, maxHp);
+        int speed = PokemonService.readIntInRange(scan, "Speed 1-" + Pokemon.MAX_SPEED + " (higher attacks first): ", 1, Pokemon.MAX_SPEED);
+
+        Pokemon newPokemon = new Pokemon(name, type, maxHp, maxHp, speed);
 
         int numAttacks = PokemonService.readIntInRange(scan, "Amount of attacks 1-4: ", 1, 4);
         for (int i = 1; i <= numAttacks; i++) {
@@ -117,7 +119,7 @@ public class PokemonService {
                 }
             }
 
-            newPokemon.getAttacks().add(new PokemonDamage(attackName, baseDamage, accuracy, attackType));
+            newPokemon.addAttack(new PokemonDamage(attackName, baseDamage, accuracy, attackType));
         }
 
         pokedex.add(newPokemon);
@@ -165,7 +167,9 @@ public class PokemonService {
             }
         }
 
-        Pokemon updated = new Pokemon(finalName, finalType, finalMaxHp, finalMaxHp);
+        int finalSpeed = PokemonService.readIntInRange(scan, "New speed (current speed: " + pokemon.getSpeed() + "): ", 1, Pokemon.MAX_SPEED);
+
+        Pokemon updated = new Pokemon(finalName, finalType, finalMaxHp, finalMaxHp, finalSpeed);
         for (Attack a : pokemon.getAttacks()) {
             updated.addAttack(a);
         }
@@ -208,7 +212,7 @@ public class PokemonService {
                 }
             } else if (attackChoice == 2) {
                 if (updated.getAttacks().isEmpty()) {
-                    System.out.println("No attacker to remove.");
+                    System.out.println("No attacks to remove.");
                 } else if (updated.getAttacks().size() == 1) {
                     System.out.println("Can't remove the last attack - a Pokemon needs at least 1.");
                 } else {
@@ -237,7 +241,7 @@ public class PokemonService {
             System.out.println((i + 1) + ". " + pokedex.get(i).getName());
         }
 
-        int index = PokemonService.readIntInRange(scan, "Which Pokemon till you remove? ", 1, pokedex.size());
+        int index = PokemonService.readIntInRange(scan, "Which Pokemon will you remove? ", 1, pokedex.size());
         Pokemon removed = pokedex.remove(index - 1);
 
         System.out.println(removed.getName() + " Deleted.");
@@ -261,6 +265,8 @@ public class PokemonService {
                                 .append(da.getType()).append("|");
                     }
                 }
+
+                line.append(";").append(p.getSpeed());
 
                 writer.write(line.toString());
                 writer.newLine();
@@ -295,7 +301,11 @@ public class PokemonService {
                     Types type = Types.valueOf(parts[1]);
                     int maxHp = Integer.parseInt(parts[2]);
                     int currentHp = Integer.parseInt(parts[3]);
-                    Pokemon p = new Pokemon(name, type, maxHp, currentHp);
+                    int speed = Pokemon.DEFAULT_SPEED;
+                    if (parts.length > 5 && !parts[5].isBlank()) {
+                        speed = Integer.parseInt(parts[5].trim());
+                    }
+                    Pokemon p = new Pokemon(name, type, maxHp, currentHp, speed);
 
                     if (parts.length > 4 && !parts[4].isBlank()) {
                         String[] attackParts = parts[4].split("\\|");
@@ -305,7 +315,7 @@ public class PokemonService {
                             int baseDamage = Integer.parseInt(a[1]);
                             int accuracy = Integer.parseInt(a[2]);
                             Types attackType = Types.valueOf(a[3]);
-                            p.getAttacks().add(new PokemonDamage(attackName, baseDamage, accuracy, attackType));
+                            p.addAttack(new PokemonDamage(attackName, baseDamage, accuracy, attackType));
                         }
                     }
 

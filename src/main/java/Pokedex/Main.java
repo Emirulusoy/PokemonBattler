@@ -66,7 +66,7 @@ public class Main {
                         pokedex.clear();
                         pokedex.addAll(PokemonSeeder.seedData());
                         PokemonService.savePokedex(pokedex, "pokedex.txt");
-                        System.out.println("Reseted to seeded data.");
+                        System.out.println("Reset to seeded data.");
                     }
                     //CASE 8 START BATTLE
                     case 8 -> {
