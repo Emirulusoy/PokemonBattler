@@ -1,17 +1,17 @@
 package Pokedex;
 
 public enum Types {
-    FIRE("Eld"),
-    WATER("Vatten"),
-    ELECTRIC("Elektrisk"),
+    FIRE("Fire"),
+    WATER("Water"),
+    ELECTRIC("Electric"),
     NORMAL("Normal"),
-    GRASS("Gräs"),
-    GROUND("Mark"),
-    ROCK("Sten"),
-    STEEL("Stål"),
-    ICE("Is"),
-    FIGHTING("Kamp"),
-    DARK("Mörker");
+    GRASS("Grass"),
+    GROUND("Ground"),
+    ROCK("Rock"),
+    STEEL("Steel"),
+    ICE("Ice"),
+    FIGHTING("Fighting"),
+    DARK("Dark");
 
     private final String label;
 
