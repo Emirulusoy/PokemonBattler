@@ -64,7 +64,11 @@ public class BattleEngine {
         return wildPool.get(random.nextInt(wildPool.size()));
     }
 
-
+    /**
+     * Turn order rule: in every round both sides pick an attack first, then the
+     * Pokemon with the highest speed attacks first. On equal speed a coin flip decides.
+     * A Pokemon that faints before its turn does not attack.
+     */
     private boolean runBattle(Pokemon player, Pokemon wild) {
         int round = 1;
         while (true) {
@@ -100,12 +104,14 @@ public class BattleEngine {
     }
 
     private void printTurnOrder(Pokemon player, Pokemon wild, boolean playerFirst) {
-        Pokemon first = playerFirst ? player : wild;
-        Pokemon second = playerFirst ? wild : player;
         if (player.getSpeed() == wild.getSpeed()) {
-            System.out.println("Same speed (" + player.getSpeed() + ") - " + first.getName() + " wins the coin flip and attacks first.");
+            System.out.println("Same speed (" + player.getSpeed() + ") - coin flip decides who attacks first.");
+        } else if (playerFirst) {
+            System.out.println(player.getName() + " is faster (" + player.getSpeed()
+                    + " vs " + wild.getSpeed() + ") and attacks first.");
         } else {
-            System.out.println(first.getName() + " is faster (" + first.getSpeed() + " vs " + second.getSpeed() + ") and attacks first.");
+            System.out.println(wild.getName() + " is faster (" + wild.getSpeed()
+                    + " vs " + player.getSpeed() + ") and attacks first.");
         }
     }
 
