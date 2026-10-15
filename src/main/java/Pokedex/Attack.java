@@ -22,6 +22,11 @@ public abstract class Attack implements BattleAction {
         return RANDOM.nextInt(100) < accuracy;
     }
 
+    @Override
+    public double getEffectiveness(Pokemon target) {
+        return TypeChart.getMultiplier(type, target.getType());
+    }
+
     public String getName() {
         return name;
     }

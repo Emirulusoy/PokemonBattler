@@ -21,15 +21,16 @@ public class PokemonDamage extends Attack {
         return power;
     }
 
-    public static int calculateDamage(int power, double randomFactor) {
-        int damage = (int) Math.round(power * DAMAGE_SCALE * randomFactor);
+    public static int calculateDamage(int power, double effectiveness, double randomFactor) {
+        int damage = (int) Math.round(power * DAMAGE_SCALE * effectiveness * randomFactor);
         return Math.max(1, damage);
     }
 
     @Override
     public void execute(Pokemon attacker, Pokemon defender) {
+        double effectiveness = getEffectiveness(defender);
         double randomFactor = MIN_RANDOM_FACTOR + RANDOM.nextDouble() * (1.0 - MIN_RANDOM_FACTOR);
-        defender.takeDamage(calculateDamage(power, randomFactor));
+        defender.takeDamage(calculateDamage(power, effectiveness, randomFactor));
     }
 
     @Override

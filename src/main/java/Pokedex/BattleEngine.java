@@ -64,11 +64,6 @@ public class BattleEngine {
         return wildPool.get(random.nextInt(wildPool.size()));
     }
 
-    /**
-     * Turn order rule: in every round both sides pick an attack first, then the
-     * Pokemon with the highest speed attacks first. On equal speed a coin flip decides.
-     * A Pokemon that faints before its turn does not attack.
-     */
     private boolean runBattle(Pokemon player, Pokemon wild) {
         int round = 1;
         while (true) {
@@ -137,6 +132,12 @@ public class BattleEngine {
         if (!action.rollHit()) {
             System.out.println("It missed!");
             return;
+        }
+        double effectiveness = action.getEffectiveness(target);
+        if (effectiveness > 1) {
+            System.out.println("It's super effective!");
+        } else if (effectiveness < 1) {
+            System.out.println("It's not very effective.");
         }
         int hpBefore = target.getCurrentHp();
         action.execute(user, target);
