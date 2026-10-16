@@ -97,7 +97,7 @@ Det här hann jag inte med:
 - No critical hits or JSON (VG parts).
 - Battle results are only the total number of wins and losses.
 - The type chart only contains the relations listed above. All other combinations are 1x.
-- `PokemonService` does a lot (input, validation and files) and should be split up.
+- `PokemonService` does a lot (input, validation and files) and should be split up, but i didn't want to mess up the code so i left it as is.
 
 ## Example
 
