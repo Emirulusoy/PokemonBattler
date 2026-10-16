@@ -30,11 +30,11 @@ mvn compile exec:java
 
 Choose one of your Pokémon and fight a random wild Pokémon from the seeded pool.
 
-- **Turn order:** the Pokémon with the highest speed attacks first. If the speed is the same, a coin flip decides.
+- **Turn order:** the Pokémon with the highest speed attacks first. If the speed is the same then one its random.
 - **Your turn:** you choose an attack from a menu each round.
 - **CPU turn:** the computer chooses one of the wild Pokémon's attacks at random.
 - **Accuracy:** an attack hits if a random number 0-99 is lower than its accuracy.
-- **Type effectiveness:** the attack's type is compared with the defending Pokémon's type. The log prints "It's super effective!" or "It's not very effective." when the multiplier is not 1x.
+- **Type effectiveness:** the attack's type is compared with the defending Pokémon's type. The log prints super effective when the move is is effective, or not very effective when the move isn't very effective.
 - **End of battle:** the battle ends when one Pokémon has 0 HP. The result is shown and saved as wins/losses.
 - Your Pokémon's HP is always restored after a battle.
 
@@ -67,25 +67,31 @@ Defined in `TypeChart`. Every attacker/defender pair that is not listed is 1x.
 
 ## OOP
 
-- `BattleAction` (interface) - something that can be used in a battle. The battle engine only uses this, so new kinds of actions can be added without changing `BattleEngine`. It has default methods for `rollHit` and `getEffectiveness`.
-- `Attack` (abstract class) implements `BattleAction` - name, accuracy and type that all attacks have, plus hit rolling and effectiveness lookup.
-- `PokemonDamage` extends `Attack` - an attack with power that does damage.
-- `TypeChart` - keeps the type effectiveness table in one place, so no other class needs to know about it. `Attack` asks it for the multiplier.
-- `CpuStrategy` (interface) - how the computer picks an attack. `RandomStrategy` (used in the game) and `AggressiveStrategy` implement it, and `CpuPlayer` uses whichever strategy it is given.
-- `Pokemon` keeps its fields private and validates the values. `PokemonException` is my own exception.
-
+- `BattleAction` is an interface for anything that can be used in a battle.
+  `BattleEngine` only knows about this interface, so I could add new kinds of
+  actions later without touching the engine.
+- `Attack` is an abstract class that implements `BattleAction`. It holds what
+  every attack has in common: a name, accuracy and a type. It also rolls for
+  hit or miss and asks `TypeChart` how effective it is.
+- `PokemonDamage` extends `Attack` and adds power, so it can actually deal damage.
+- `TypeChart` keeps all the type matchups in one place. Nothing else needs to
+  know how they work, which makes it easy to add more later.
+- `CpuStrategy` is an interface for how the computer picks its attack.
+  `RandomStrategy` is the one used in the game, and `AggressiveStrategy` is
+  another option. `CpuPlayer` works with whichever strategy it gets.
+- `Pokemon` keeps its fields private and checks the values, and
+  `PokemonException` is my own exception for invalid input.
 ## VG
 
-Attempted:
+Jag fokuserade på G-kraven och hann inte med de flesta VG-delarna.
+Typeffektivitetstabellen    fick jag med, och den syns i stridsloggen.
 
-- Type effectiveness table (VG 6.1).
+Det här hann jag inte med:
 
-Not done:
-
-- JSON as persistence format (Jackson). Persistence uses text files.
-- Critical hits.
-- Persistent statistics beyond total wins/losses (win/loss ratio per Pokémon, most used attack, most used Pokémon).
-
+- Att spara allt som JSON med Jackson. Jag använde vanliga textfiler i stället.
+- Kritiska träffar.
+- Mer detaljerad statistik, som vinst/förlust per Pokémon och mest använda
+  attack eller Pokémon. Jag sparar bara totala vinster och förluster.
 ## Known limitations
 
 - No critical hits or JSON (VG parts).

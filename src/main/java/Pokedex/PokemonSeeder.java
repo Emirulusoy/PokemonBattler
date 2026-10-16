@@ -10,7 +10,7 @@ public class PokemonSeeder {
         Pokemon p1 = new Pokemon("Donphan", Types.GROUND, 90, 90, 50);
         p1.addAttack(new PokemonDamage("Rapid Spin", 50, 100, Types.NORMAL));
         p1.addAttack(new PokemonDamage("Earthquake", 100, 100, Types.GROUND));
-        p1.addAttack(new PokemonDamage("Rock Slide", 75, 90, Types.ROCK));
+        p1.addAttack(new PokemonDamage("nothing", 100, 10, Types.ROCK));
         p1.addAttack(new PokemonDamage("Iron Head", 80, 100, Types.STEEL));
         pokedex.add(p1);
 

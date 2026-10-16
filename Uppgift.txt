@@ -1,6 +1,5 @@
-Här är länken till inlämingsuppgiften, hoppas allt blivit rätt. jag hade lite svårt med hur jag
-skulle lämna in uppgiften men tror att detta är lösningen
+Här är länken till inlämning 2, vet ej om länken behövs eftersom att repot redan är public.
+men i allafall, lägger länken nedan för säkerhetsskull.
 
 https://github.com/Emirulusoy/Pokedex
 
-Fokuserade på G-kraven, hann inte riktigt hålla på med VG delvis pga deadline och att jag strugglade redan med G
