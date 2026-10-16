@@ -1,5 +1,5 @@
 Här är länken till inlämning 2, vet ej om länken behövs eftersom att repot redan är public.
 men i allafall, lägger länken nedan för säkerhetsskull.
 
-https://github.com/Emirulusoy/Pokedex
+https://github.com/Emirulusoy/PokemonBattler
 

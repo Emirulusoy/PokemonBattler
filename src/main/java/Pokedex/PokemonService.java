@@ -29,7 +29,7 @@ public class PokemonService {
 
     public static int readIntInRange(Scanner scan, String prompt, int min, int max) {
         while (true) {
-            System.out.print(prompt);
+            System.out.println(prompt);
             String input = scan.nextLine();
 
             try {
